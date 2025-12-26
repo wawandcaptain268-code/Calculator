@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kalkulator Item RPG</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap');
+
+    body {
+      font-family: 'MedievalSharp', cursive;
+      background: radial-gradient(circle at top, #1a1a2e, #0a0a15);
+      color: #f5d67b;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: rgba(40, 40, 60, 0.9);
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
+      width: 360px;
+      text-align: center;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    h2 {
+      color: #ffd700;
+      text-shadow: 0 0 10px #ffea80;
+    }
+
+    .item {
+      background: rgba(60, 60, 90, 0.8);
+      padding: 10px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      box-shadow: 0 0 8px rgba(255, 215, 0, 0.2);
+      transition: transform 0.2s;
+    }
+
+    .item:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
+    }
+
+    input, select {
+      margin: 6px;
+      padding: 6px;
+      border-radius: 5px;
+      border: none;
+      width: 80%;
+      text-align: center;
+      background: #24243e;
+      color: #f5d67b;
+      font-weight: bold;
+    }
+
+    button {
+      background: linear-gradient(90deg, #b8860b, #ffd700);
+      color: #1a1a1a;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 8px;
+      font-weight: bold;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(255, 255, 0, 0.8);
+    }
+
+    #hasil {
+      color: #ffe680;
+      font-size: 1.1em;
+      white-space: pre-line;
+      text-shadow: 0 0 8px #ffd700;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>💰 Kalkulator Item RPG 💰</h2>
+
+    <div id="itemList"></div>
+
+    <button onclick="tambahItem()">+ Tambah Item</button><br>
+    <button onclick="hitungTotal()">⚔️ Hitung Total</button>
+
+    <h3 id="hasil">Total Semua: -</h3>
+  </div>
+
+  <script>
+    function tambahItem() {
+      const itemDiv = document.createElement("div");
+      itemDiv.classList.add("item");
+      itemDiv.innerHTML = `
+        <input type="text" placeholder="Nama item (contoh: Coal)" class="namaItem"><br>
+        <input type="number" placeholder="Jumlah barang" class="jumlah"><br>
+        <input type="number" placeholder="Harga per barang" class="harga"><br>
+        <select class="operasi">
+          <option value="+">+ (Tambah)</option>
+          <option value="-">− (Kurang)</option>
+          <option value="*">× (Kali)</option>
+          <option value="/">÷ (Bagi)</option>
+        </select><br>
+      `;
+      document.getElementById("itemList").appendChild(itemDiv);
+    }
+
+    function hitungTotal() {
+      const items = document.querySelectorAll(".item");
+      let totalKeseluruhan = 0;
+      let detailHasil = "";
+      let isFirstItem = true;
+
+      items.forEach((item) => {
+        const nama = item.querySelector(".namaItem").value || "Item tanpa nama";
+        const jumlah = parseFloat(item.querySelector(".jumlah").value) || 0;
+        const harga = parseFloat(item.querySelector(".harga").value) || 0;
+        const operasi = item.querySelector(".operasi").value;
+
+        let subtotal = 0;
+
+        // Operasi langsung antara jumlah dan harga
+        switch (operasi) {
+          case '+': subtotal = jumlah + harga; break;
+          case '-': subtotal = jumlah - harga; break;
+          case '*': subtotal = jumlah * harga; break;
+          case '/': subtotal = harga !== 0 ? jumlah / harga : 0; break;
+        }
+
+        // Gabungkan antar-item
+        if (isFirstItem) {
+          totalKeseluruhan = subtotal;
+          isFirstItem = false;
+        } else {
+          totalKeseluruhan += subtotal;
+        }
+
+        detailHasil += `🏷️ ${nama}: ${jumlah} ${operasi} ${harga} = ${subtotal} gold\n`;
+      });
+
+      document.getElementById("hasil").innerText =
+        `💰 Total Semua: ${totalKeseluruhan} gold\n\n${detailHasil}`;
+    }
+
+    // Tambahkan satu item otomatis saat pertama dibuka
+    tambahItem();
+  </script>
+</body>
+</html>
