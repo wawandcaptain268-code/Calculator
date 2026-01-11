@@ -1,163 +1,273 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kalkulator Item RPG</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator Item RPG</title>
 
-    body {
-      font-family: 'MedievalSharp', cursive;
-      background: radial-gradient(circle at top, #1a1a2e, #0a0a15);
-      color: #f5d67b;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
+<link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
 
-    .container {
-      background: rgba(40, 40, 60, 0.9);
-      padding: 25px;
-      border-radius: 16px;
-      box-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
-      width: 360px;
-      text-align: center;
-      animation: fadeIn 1s ease-in-out;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: 'MedievalSharp', cursive;
+  background: radial-gradient(circle at top, #1a1a2e, #0a0a15);
+  color: #f5d67b;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
-    }
+.container {
+  background: rgba(40,40,60,0.9);
+  padding: 24px;
+  border-radius: 16px;
+  width: 380px;
+  text-align: center;
+  box-shadow: 0 0 25px rgba(255,215,0,0.3);
+}
 
-    h2 {
-      color: #ffd700;
-      text-shadow: 0 0 10px #ffea80;
-    }
+h2 { color: #ffd700; }
 
-    .item {
-      background: rgba(60, 60, 90, 0.8);
-      padding: 10px;
-      border-radius: 10px;
-      margin-bottom: 10px;
-      box-shadow: 0 0 8px rgba(255, 215, 0, 0.2);
-      transition: transform 0.2s;
-    }
+.item {
+  background: rgba(60,60,90,0.8);
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
 
-    .item:hover {
-      transform: scale(1.03);
-      box-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
-    }
+input {
+  width: 80%;
+  margin: 6px;
+  padding: 6px;
+  border-radius: 6px;
+  border: none;
+  background: #24243e;
+  color: #f5d67b;
+  text-align: center;
+}
 
-    input, select {
-      margin: 6px;
-      padding: 6px;
-      border-radius: 5px;
-      border: none;
-      width: 80%;
-      text-align: center;
-      background: #24243e;
-      color: #f5d67b;
-      font-weight: bold;
-    }
+button {
+  background: linear-gradient(90deg,#b8860b,#ffd700);
+  color: #1a1a1a;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 6px;
+  font-weight: bold;
+}
 
-    button {
-      background: linear-gradient(90deg, #b8860b, #ffd700);
-      color: #1a1a1a;
-      padding: 10px 16px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      margin: 8px;
-      font-weight: bold;
-      box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
+/* ===== TABEL HASIL ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  font-size: 0.9em;
+}
 
-    button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 20px rgba(255, 255, 0, 0.8);
-    }
+th, td {
+  border: 1px solid rgba(255,215,0,0.3);
+  padding: 6px;
+  text-align: center;
+}
 
-    #hasil {
-      color: #ffe680;
-      font-size: 1.1em;
-      white-space: pre-line;
-      text-shadow: 0 0 8px #ffd700;
-    }
-  </style>
+th {
+  background: rgba(255,215,0,0.25);
+  color: #ffd700;
+}
+
+.total-row {
+  font-weight: bold;
+  background: rgba(255,215,0,0.15);
+}
+
+/* ===== MENU ===== */
+.menu-btn {
+  position: fixed;
+  top: 15px;
+  right: 20px;
+  font-size: 26px;
+  cursor: pointer;
+  color: #ffd700;
+  z-index: 1001;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: none;
+  z-index: 999;
+}
+.overlay.active { display: block; }
+
+.side-menu {
+  position: fixed;
+  top: 0;
+  right: -320px;
+  width: 300px;
+  height: 100%;
+  background: rgba(30,30,50,0.95);
+  padding: 16px;
+  overflow-y: auto;
+  transition: right 0.3s ease;
+  z-index: 1000;
+}
+.side-menu.active { right: 0; }
+</style>
 </head>
+
 <body>
-  <div class="container">
-    <h2>💰 Kalkulator Item RPG 💰</h2>
 
-    <div id="itemList"></div>
+<div class="menu-btn" onclick="toggleMenu()">☰</div>
+<div class="overlay" id="overlay" onclick="closeMenu()"></div>
 
-    <button onclick="tambahItem()">+ Tambah Item</button><br>
-    <button onclick="hitungTotal()">⚔️ Hitung Total</button>
+<div class="side-menu" id="sideMenu">
+  <h3>📜 Riwayat</h3>
+  <div id="riwayat"></div>
+  <button onclick="hapusRiwayat()">🗑️ Hapus Riwayat</button>
+</div>
 
-    <h3 id="hasil">Total Semua: -</h3>
-  </div>
+<div class="container">
+  <h2>💰 Kalkulator Item RPG 💰</h2>
 
-  <script>
-    function tambahItem() {
-      const itemDiv = document.createElement("div");
-      itemDiv.classList.add("item");
-      itemDiv.innerHTML = `
-        <input type="text" placeholder="Nama item (contoh: Coal)" class="namaItem"><br>
-        <input type="number" placeholder="Jumlah barang" class="jumlah"><br>
-        <input type="number" placeholder="Harga per barang" class="harga"><br>
-        <select class="operasi">
-          <option value="+">+ (Tambah)</option>
-          <option value="-">− (Kurang)</option>
-          <option value="*">× (Kali)</option>
-          <option value="/">÷ (Bagi)</option>
-        </select><br>
-      `;
-      document.getElementById("itemList").appendChild(itemDiv);
-    }
+  <div id="itemList"></div>
 
-    function hitungTotal() {
-      const items = document.querySelectorAll(".item");
-      let totalKeseluruhan = 0;
-      let detailHasil = "";
-      let isFirstItem = true;
+  <button onclick="tambahItem()">+ Tambah Item</button><br>
+  <button onclick="hitungTotal()">⚔️ Hitung Total</button>
+  <button onclick="simpanRiwayat()">💾 Simpan ke Riwayat</button>
 
-      items.forEach((item) => {
-        const nama = item.querySelector(".namaItem").value || "Item tanpa nama";
-        const jumlah = parseFloat(item.querySelector(".jumlah").value) || 0;
-        const harga = parseFloat(item.querySelector(".harga").value) || 0;
-        const operasi = item.querySelector(".operasi").value;
+  <div id="hasil"></div>
+</div>
 
-        let subtotal = 0;
+<script>
+"use strict";
 
-        // Operasi langsung antara jumlah dan harga
-        switch (operasi) {
-          case '+': subtotal = jumlah + harga; break;
-          case '-': subtotal = jumlah - harga; break;
-          case '*': subtotal = jumlah * harga; break;
-          case '/': subtotal = harga !== 0 ? jumlah / harga : 0; break;
-        }
+/* ===== DATA ===== */
+let riwayatHitung = JSON.parse(localStorage.getItem("riwayatRPG")) || [];
+let hasilTerakhir = null;
 
-        // Gabungkan antar-item
-        if (isFirstItem) {
-          totalKeseluruhan = subtotal;
-          isFirstItem = false;
-        } else {
-          totalKeseluruhan += subtotal;
-        }
+/* ===== ITEM ===== */
+function tambahItem() {
+  const div = document.createElement("div");
+  div.className = "item";
+  div.innerHTML = `
+    <input class="namaItem" placeholder="Nama item">
+    <input type="number" class="jumlah" placeholder="Jumlah">
+    <input type="number" class="harga" placeholder="Harga per item">
+  `;
+  document.getElementById("itemList").appendChild(div);
+}
 
-        detailHasil += `🏷️ ${nama}: ${jumlah} ${operasi} ${harga} = ${subtotal} gold\n`;
-      });
+/* ===== HITUNG ===== */
+function hitungTotal() {
+  const items = document.querySelectorAll(".item");
+  let total = 0;
 
-      document.getElementById("hasil").innerText =
-        `💰 Total Semua: ${totalKeseluruhan} gold\n\n${detailHasil}`;
-    }
+  let tabel = `
+    <table>
+      <tr>
+        <th>Nama</th>
+        <th>Jumlah</th>
+        <th>×</th>
+        <th>Harga</th>
+        <th>Total</th>
+      </tr>
+  `;
 
-    // Tambahkan satu item otomatis saat pertama dibuka
-    tambahItem();
-  </script>
+  let detailText = "";
+
+  items.forEach(item => {
+    const nama = item.querySelector(".namaItem").value || "Item";
+    const jumlah = parseFloat(item.querySelector(".jumlah").value);
+    const harga = parseFloat(item.querySelector(".harga").value);
+
+    if (isNaN(jumlah) || isNaN(harga)) return;
+
+    const subtotal = jumlah * harga;
+    total += subtotal;
+
+    tabel += `
+      <tr>
+        <td>${nama}</td>
+        <td>${jumlah}</td>
+        <td>×</td>
+        <td>${harga}</td>
+        <td>${subtotal}</td>
+      </tr>
+    `;
+
+    detailText += `🏷️ ${nama}: ${jumlah} × ${harga} = ${subtotal} gold\n`;
+  });
+
+  tabel += `
+    <tr class="total-row">
+      <td colspan="4">TOTAL</td>
+      <td>${total}</td>
+    </tr>
+    </table>
+  `;
+
+  hasilTerakhir = {
+    waktu: new Date().toLocaleString("id-ID"),
+    total,
+    detail: detailText
+  };
+
+  document.getElementById("hasil").innerHTML = tabel;
+}
+
+/* ===== RIWAYAT ===== */
+function simpanRiwayat() {
+  if (!hasilTerakhir) {
+    alert("Hitung total dulu sebelum menyimpan!");
+    return;
+  }
+
+  riwayatHitung.push(hasilTerakhir);
+  localStorage.setItem("riwayatRPG", JSON.stringify(riwayatHitung));
+  tampilkanRiwayat();
+  alert("Riwayat disimpan!");
+}
+
+function tampilkanRiwayat() {
+  const r = document.getElementById("riwayat");
+  r.innerHTML = "";
+
+  riwayatHitung.slice().reverse().forEach(data => {
+    r.innerHTML += `
+      <div class="item">
+        <strong>${data.waktu}</strong><br>
+        💰 ${data.total} gold
+        <pre>${data.detail}</pre>
+      </div>
+    `;
+  });
+}
+
+function hapusRiwayat() {
+  riwayatHitung = [];
+  localStorage.removeItem("riwayatRPG");
+  tampilkanRiwayat();
+}
+
+/* ===== MENU ===== */
+function toggleMenu() {
+  document.getElementById("sideMenu").classList.toggle("active");
+  document.getElementById("overlay").classList.toggle("active");
+}
+
+function closeMenu() {
+  document.getElementById("sideMenu").classList.remove("active");
+  document.getElementById("overlay").classList.remove("active");
+}
+
+/* ===== INIT ===== */
+tampilkanRiwayat();
+tambahItem();
+</script>
+
 </body>
 </html>
